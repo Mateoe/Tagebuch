@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tagebuch">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.Actividad_interfaz_principal"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
