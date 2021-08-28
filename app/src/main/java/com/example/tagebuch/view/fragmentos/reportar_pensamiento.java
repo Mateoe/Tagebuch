@@ -10,19 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.tagebuch.R;
 import com.example.tagebuch.controller.ControladorInterfazPrincipal;
 import com.example.tagebuch.view.Actividad_interfaz_principal;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
 
-public class Reportar_pensamiento extends Fragment {
+public class reportar_pensamiento extends Fragment {
 
     private TextInputLayout tituloPensamiento;
     private TextInputLayout descripcionPensamiento;
@@ -31,12 +29,12 @@ public class Reportar_pensamiento extends Fragment {
     private Spinner categoriaPensamiento;
     private ControladorInterfazPrincipal controladorInterfazPrincipal;
 
-    public Reportar_pensamiento() {
+    public reportar_pensamiento() {
         // Required empty public constructor
     }
 
-    public static Reportar_pensamiento newInstance() {
-        Reportar_pensamiento fragment = new Reportar_pensamiento();
+    public static reportar_pensamiento newInstance() {
+        reportar_pensamiento fragment = new reportar_pensamiento();
         return fragment;
     }
 
@@ -79,9 +77,12 @@ public class Reportar_pensamiento extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Boolean pensamientoVacio = TextUtils.isEmpty(tituloPensamiento.getEditText().getText());
-                Boolean descripcionVacia = TextUtils.isEmpty(descripcionPensamiento.getEditText().getText());
-                Boolean tituloMuyLargo = tituloPensamiento.getEditText().getText().length()>100;
+                Boolean pensamientoVacio =controladorInterfazPrincipal.verificarCampoLleno(
+                        tituloPensamiento.getEditText().getText().toString());
+                Boolean descripcionVacia =controladorInterfazPrincipal.verificarCampoLleno(
+                        descripcionPensamiento.getEditText().getText().toString());
+                Boolean tituloMuyLargo = controladorInterfazPrincipal.verificarLongitud(
+                        tituloPensamiento.getEditText().getText().toString());
 
                 if(pensamientoVacio || descripcionVacia || tituloMuyLargo){
                     if (pensamientoVacio){
@@ -114,5 +115,7 @@ public class Reportar_pensamiento extends Fragment {
         String descripcion = descripcionPensamiento.getEditText().getText().toString();
         String categoria = categoriaPensamiento.getSelectedItem().toString();
         controladorInterfazPrincipal.reportarPensamientoControlador(this, titulo, descripcion, categoria);
+        cerrarReportePensamiento();
+        controladorInterfazPrincipal.mensajeReportarPensamiento((Actividad_interfaz_principal)this.getActivity());
     }
 }

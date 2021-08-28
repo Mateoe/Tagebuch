@@ -1,8 +1,7 @@
 package com.example.tagebuch.controller;
 
 
-import android.content.Context;
-import android.graphics.Color;
+import android.text.TextUtils;
 
 import com.example.tagebuch.model.LocalStorage;
 import com.example.tagebuch.model.dao.CategoriaRoomDAO;
@@ -10,7 +9,7 @@ import com.example.tagebuch.model.dao.PensamientoRoomDAO;
 import com.example.tagebuch.model.pojo.Categoria;
 import com.example.tagebuch.model.pojo.Pensamiento;
 import com.example.tagebuch.view.Actividad_interfaz_principal;
-import com.example.tagebuch.view.fragmentos.Reportar_pensamiento;
+import com.example.tagebuch.view.fragmentos.reportar_pensamiento;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +44,7 @@ public class ControladorInterfazPrincipal {
     }
 
     //Metodo del controlador encargado de reportar(insertar) el pensamiento
-    public void reportarPensamientoControlador(Reportar_pensamiento reportar_pensamiento, String titulo, String descripcion, String categoria) {
+    public void reportarPensamientoControlador(reportar_pensamiento reportar_pensamiento, String titulo, String descripcion, String categoria) {
 
         Actividad_interfaz_principal actividad_interfaz_principal = (Actividad_interfaz_principal) reportar_pensamiento.getActivity();
 
@@ -56,14 +55,13 @@ public class ControladorInterfazPrincipal {
         Pensamiento pensamiento = new Pensamiento();
         pensamiento.setTitulo(titulo);
         pensamiento.setDescripcion(descripcion);
+
         pensamiento.setCategoria(categoria);
         DateFormat fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
         pensamiento.setFecha(
                 fecha.format(Calendar.getInstance().getTime()));
         this.pensamientoRoomDAO.insertar(pensamiento);
-
-        reportar_pensamiento.cerrarReportePensamiento();
-        actividad_interfaz_principal.mensaje("Pensamiento reportado!", "Tu pensamiento se agregó a la lista.");
     }
 
     //Se crea un metodo para activar el boton de reportar pensamiento en la interfaz principal
@@ -72,7 +70,7 @@ public class ControladorInterfazPrincipal {
         actividad_interfaz_principal.activarBoton();
     }
 
-    public List<String> obtenerCategorias(Reportar_pensamiento reportar_pensamiento){
+    public List<String> obtenerCategorias(reportar_pensamiento reportar_pensamiento){
         this.categoriaRoomDAO = LocalStorage
                 .getLocalStorage(reportar_pensamiento.getActivity().getApplicationContext())
                 .categoriaRoomDAO();
@@ -141,11 +139,6 @@ public class ControladorInterfazPrincipal {
         pensamientoRoomDAO.eliminar(pensamiento);
     }
 
-    public void mensajeEliminarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
-        actividad_interfaz_principal.mensaje("Pensamiento eliminado!",
-                "Tu pensamiento se eliminó de forma permanente.");
-    }
-
     public void mostrarEditarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal,
                                           String categoria, String fecha, String titulo, String descripcion,
                                           String color){
@@ -166,10 +159,26 @@ public class ControladorInterfazPrincipal {
 
         pensamientoRoomDAO.actualizar(pensamiento);
     }
+    public void mensajeReportarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
+        actividad_interfaz_principal.mensaje("Pensamiento reportado!",
+                "Tu pensamiento se agregó a la lista.");
+    }
 
     public void mensajeEditarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
         actividad_interfaz_principal.mensaje("Pensamiento editado!",
                 "Los cambios se verán reflejados en la lista.");
+    }
+
+    public void mensajeEliminarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
+        actividad_interfaz_principal.mensaje("Pensamiento eliminado!",
+                "Tu pensamiento se eliminó de forma permanente.");
+    }
+
+    public boolean verificarCampoLleno(String texto){
+        return  TextUtils.isEmpty(texto);
+    }
+    public boolean verificarLongitud(String texto){
+        return  texto.length()>100;
     }
 
 }

@@ -81,9 +81,12 @@ public class editar_pensamiento extends Fragment {
         editar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Boolean pensamientoVacio = TextUtils.isEmpty(tituloPensamiento.getEditText().getText());
-                Boolean descripcionVacia = TextUtils.isEmpty(descripcionPensamiento.getEditText().getText());
-                Boolean tituloMuyLargo = tituloPensamiento.getEditText().getText().length()>100;
+                Boolean pensamientoVacio =controladorInterfazPrincipal.verificarCampoLleno(
+                        tituloPensamiento.getEditText().getText().toString());
+                Boolean descripcionVacia =controladorInterfazPrincipal.verificarCampoLleno(
+                        descripcionPensamiento.getEditText().getText().toString());
+                Boolean tituloMuyLargo = controladorInterfazPrincipal.verificarLongitud(
+                        tituloPensamiento.getEditText().getText().toString());
 
                 if(pensamientoVacio || descripcionVacia || tituloMuyLargo){
                     if (pensamientoVacio){

@@ -4,14 +4,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.tagebuch.R;
 import com.example.tagebuch.controller.ControladorInterfazPrincipal;
 import com.example.tagebuch.model.pojo.Pensamiento;
-import com.example.tagebuch.view.fragmentos.Reportar_pensamiento;
+import com.example.tagebuch.view.fragmentos.reportar_pensamiento;
 import com.example.tagebuch.view.fragmentos.detalle_pensamiento;
 import com.example.tagebuch.view.fragmentos.editar_pensamiento;
 import com.example.tagebuch.view.fragmentos.item_pensamiento;
@@ -48,6 +51,27 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
                 reportarPensamiento();
             }
         });
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.black)));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_principal, menu);
+
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.boton_deshacer:
+                mensaje("Deshacer","Deshacer");
+                return true;
+            case R.id.boton_rehacer:
+                mensaje("Rehacer","Rehacer");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void crearCategorias(){
@@ -63,7 +87,7 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
     public void reportarPensamiento(){
         //Se invoca el fragmento encargado de crear el pensamiento
         getSupportFragmentManager().beginTransaction().replace(R.id.linear_layout_interfaz_principal,
-                Reportar_pensamiento.newInstance()).commit();
+                reportar_pensamiento.newInstance()).commit();
     }
 
     public void listarPensamiento(){
@@ -98,7 +122,7 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
                 editar_pensamiento.newInstance(titulo,descripcion,categoria,fecha,color)).commit();
     }
 
-    //Se crea el metodo encargado de notificar que el pensamiento fue reportado exitosamente
+    //Se crea el metodo encargado de mostrar los mensajes al usuario
     public void mensaje(String titulo, String mensaje){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(mensaje)
