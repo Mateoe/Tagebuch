@@ -19,7 +19,7 @@ public class detalle_pensamiento extends Fragment {
 
     private TextView categoriaDetalle, fechaDetalle, tituloDetalle, descripcionDetalle, colorDetalle;
     private View rootView;
-    private Button atras, eliminar;
+    private Button atras, eliminar, editar;
     private ControladorInterfazPrincipal controladorInterfazPrincipal;
 
     private String categoriaDetallePensamiento;
@@ -62,6 +62,7 @@ public class detalle_pensamiento extends Fragment {
         descripcionDetalle = rootView.findViewById(R.id.descripcion_detalle_pensamiento);
         atras = rootView.findViewById(R.id.boton_atras_detalle_pensamiento);
         eliminar = rootView.findViewById(R.id.boton_eliminar_pensamiento);
+        editar = rootView.findViewById(R.id.boton_editar_pensamiento);
 
         categoriaDetalle.setText(categoriaDetallePensamiento);
         fechaDetalle.setText(fechaDetallePensamiento);
@@ -85,11 +86,18 @@ public class detalle_pensamiento extends Fragment {
             }
         });
 
+        editar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editarPensamiento();
+            }
+        });
+
         return rootView;
     }
 
     public void eliminarPensamiento(){
-        controladorInterfazPrincipal.eliminarPensamiento((Actividad_interfaz_principal) this.getActivity(),
+        controladorInterfazPrincipal.eliminarPensamientoControlador((Actividad_interfaz_principal) this.getActivity(),
                 tituloDetallePensamiento,descripcionDetallePensamiento,categoriaDetallePensamiento,fechaDetallePensamiento);
         cerrarDetalle();
         controladorInterfazPrincipal.mensajeEliminarPensamiento((Actividad_interfaz_principal) this.getActivity());
@@ -101,6 +109,11 @@ public class detalle_pensamiento extends Fragment {
         controladorInterfazPrincipal.activarBotonReporte((Actividad_interfaz_principal) this.getActivity());
     }
 
+    public void editarPensamiento(){
+        controladorInterfazPrincipal.mostrarEditarPensamiento((Actividad_interfaz_principal) this.getActivity(),
+                categoriaDetallePensamiento, fechaDetallePensamiento, tituloDetallePensamiento,
+                descripcionDetallePensamiento, colorDetallePensamiento);
+    }
 
     public String getCategoriaDetallePensamiento() {
         return categoriaDetallePensamiento;

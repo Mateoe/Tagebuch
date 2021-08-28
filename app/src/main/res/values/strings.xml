@@ -16,6 +16,7 @@
     <string name="text_view_titulo_detalle">Titulo detalle</string>
     <string name="button_atras">Atras</string>
     <string name="titulo_detalle_pensamiento">DETALLE DE PENSAMIENTO</string>
+    <string name="titulo_editar_pensamiento">EDITAR PENSAMIENTO</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

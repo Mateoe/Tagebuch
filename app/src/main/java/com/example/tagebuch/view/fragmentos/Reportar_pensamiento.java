@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,24 @@ public class Reportar_pensamiento extends Fragment {
         reportar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                reportarPensamiento();
+
+                Boolean pensamientoVacio = TextUtils.isEmpty(tituloPensamiento.getEditText().getText());
+                Boolean descripcionVacia = TextUtils.isEmpty(descripcionPensamiento.getEditText().getText());
+                Boolean tituloMuyLargo = tituloPensamiento.getEditText().getText().length()>100;
+
+                if(pensamientoVacio || descripcionVacia || tituloMuyLargo){
+                    if (pensamientoVacio){
+                        tituloPensamiento.getEditText().setError("Campo requerido");
+                    }
+                    if (descripcionVacia){
+                        descripcionPensamiento.getEditText().setError("Campo requerido");
+                    }
+                    if (tituloMuyLargo){
+                        tituloPensamiento.getEditText().setError("La longitud máxima del titulo es de 100 caracteres");
+                    }
+                }else {
+                    reportarPensamiento();
+                }
             }
         });
 
@@ -95,6 +113,6 @@ public class Reportar_pensamiento extends Fragment {
         String titulo = tituloPensamiento.getEditText().getText().toString();
         String descripcion = descripcionPensamiento.getEditText().getText().toString();
         String categoria = categoriaPensamiento.getSelectedItem().toString();
-        controladorInterfazPrincipal.reportar(this, titulo, descripcion, categoria);
+        controladorInterfazPrincipal.reportarPensamientoControlador(this, titulo, descripcion, categoria);
     }
 }

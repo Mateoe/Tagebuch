@@ -13,6 +13,7 @@ import com.example.tagebuch.controller.ControladorInterfazPrincipal;
 import com.example.tagebuch.model.pojo.Pensamiento;
 import com.example.tagebuch.view.fragmentos.Reportar_pensamiento;
 import com.example.tagebuch.view.fragmentos.detalle_pensamiento;
+import com.example.tagebuch.view.fragmentos.editar_pensamiento;
 import com.example.tagebuch.view.fragmentos.item_pensamiento;
 
 import java.util.List;
@@ -89,6 +90,12 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
         botonReportarPensamiento.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction().replace(R.id.linear_layout_interfaz_principal,
                 detalle_pensamiento.newInstance(categoria,fecha,titulo,descripcion,color)).commit();
+    }
+
+    public void visualizarEditarPensamiento(String titulo, String descripcion, String categoria, String fecha, String color){
+        botonReportarPensamiento.setVisibility(View.GONE);
+        getSupportFragmentManager().beginTransaction().replace(R.id.linear_layout_interfaz_principal,
+                editar_pensamiento.newInstance(titulo,descripcion,categoria,fecha,color)).commit();
     }
 
     //Se crea el metodo encargado de notificar que el pensamiento fue reportado exitosamente

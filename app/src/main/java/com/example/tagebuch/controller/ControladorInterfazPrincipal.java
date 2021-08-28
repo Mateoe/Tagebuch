@@ -37,7 +37,7 @@ public class ControladorInterfazPrincipal {
             categoria[1] = new Categoria("Entretenimiento","Entretenimiento","Amarillo");
             categoria[2] = new Categoria("Educación","Educación","Verde");
             categoria[3] = new Categoria("Ocio","Ocio","Naranja");
-            categoria[4] = new Categoria("Compras","Compras","Azul");
+            categoria[4] = new Categoria("Hogar","Hogar","Azul");
 
             this.categoriaRoomDAO.insertarMuchos(categoria);
         }
@@ -45,7 +45,7 @@ public class ControladorInterfazPrincipal {
     }
 
     //Metodo del controlador encargado de reportar(insertar) el pensamiento
-    public void reportar(Reportar_pensamiento reportar_pensamiento, String titulo, String descripcion, String categoria) {
+    public void reportarPensamientoControlador(Reportar_pensamiento reportar_pensamiento, String titulo, String descripcion, String categoria) {
 
         Actividad_interfaz_principal actividad_interfaz_principal = (Actividad_interfaz_principal) reportar_pensamiento.getActivity();
 
@@ -125,7 +125,7 @@ public class ControladorInterfazPrincipal {
 
     }
 
-    public void eliminarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal,
+    public void eliminarPensamientoControlador(Actividad_interfaz_principal actividad_interfaz_principal,
                                     String titulo, String descripcion, String categoria, String fecha){
 
         this.pensamientoRoomDAO = LocalStorage
@@ -145,4 +145,31 @@ public class ControladorInterfazPrincipal {
         actividad_interfaz_principal.mensaje("Pensamiento eliminado!",
                 "Tu pensamiento se eliminó de forma permanente.");
     }
+
+    public void mostrarEditarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal,
+                                          String categoria, String fecha, String titulo, String descripcion,
+                                          String color){
+        actividad_interfaz_principal.visualizarEditarPensamiento(titulo,descripcion,categoria,fecha,color);
+    }
+
+    public void editarPensamientoControlador(Actividad_interfaz_principal actividad_interfaz_principal,
+                                             String titulo, String descripcion, String categoria, String fecha){
+        this.pensamientoRoomDAO = LocalStorage
+                .getLocalStorage(actividad_interfaz_principal.getApplicationContext())
+                .pensamientoRoomDAO();
+
+        Pensamiento pensamiento = new Pensamiento();
+        pensamiento.setTitulo(titulo);
+        pensamiento.setDescripcion(descripcion);
+        pensamiento.setCategoria(categoria);
+        pensamiento.setFecha(fecha);
+
+        pensamientoRoomDAO.actualizar(pensamiento);
+    }
+
+    public void mensajeEditarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
+        actividad_interfaz_principal.mensaje("Pensamiento editado!",
+                "Los cambios se verán reflejados en la lista.");
+    }
+
 }
