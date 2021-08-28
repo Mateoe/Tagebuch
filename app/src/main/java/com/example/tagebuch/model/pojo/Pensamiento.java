@@ -2,24 +2,24 @@ package com.example.tagebuch.model.pojo;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-@Entity(tableName = "pensamientos")
+@Entity(tableName = "pensamientos",
+        foreignKeys =
+                {@ForeignKey(entity = Categoria.class,
+                parentColumns = "nombre",
+                childColumns = "categoria",
+                onDelete = ForeignKey.CASCADE)})
 public class Pensamiento {
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    private Integer _id;
+
     private String titulo;
     private String descripcion;
-
+    @PrimaryKey
     @NonNull
-    public Integer get_id() {
-        return _id;
-    }
-
-    public void set_id(@NonNull Integer _id) {
-        this._id = _id;
-    }
+    private String fecha;
+    private String categoria;
 
     public String getTitulo() {
         return titulo;
@@ -35,5 +35,22 @@ public class Pensamiento {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    @NonNull
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(@NonNull String fecha) {
+        this.fecha = fecha;
     }
 }

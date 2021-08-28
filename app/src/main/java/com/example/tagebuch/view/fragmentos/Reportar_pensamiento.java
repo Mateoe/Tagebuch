@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.example.tagebuch.R;
 import com.example.tagebuch.controller.ControladorInterfazPrincipal;
@@ -16,20 +18,22 @@ import com.example.tagebuch.view.Actividad_interfaz_principal;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 
 public class Reportar_pensamiento extends Fragment {
 
-    private EditText tituloPensamiento;
+    private TextInputLayout tituloPensamiento;
     private TextInputLayout descripcionPensamiento;
     private Button reportar, cancelar;
     private View rootView;
+    private Spinner categoriaPensamiento;
     private ControladorInterfazPrincipal controladorInterfazPrincipal;
 
     public Reportar_pensamiento() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static Reportar_pensamiento newInstance() {
         Reportar_pensamiento fragment = new Reportar_pensamiento();
         return fragment;
@@ -44,7 +48,9 @@ public class Reportar_pensamiento extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //Se crean los apuntadores a los elementos de la vista
         rootView = inflater.inflate(R.layout.fragment_reportar_pensamiento, container, false);
+        categoriaPensamiento = rootView.findViewById(R.id.selector_categoria_reportar_pensamiento);
         tituloPensamiento = rootView.findViewById(R.id.reportar_titulo_pensamiento);
         descripcionPensamiento = rootView.findViewById(R.id.text_input_layout_reportar_pensamieto);
         cancelar = rootView.findViewById(R.id.boton_cancelar_reporte_pensamiento_fragmento);
@@ -52,10 +58,19 @@ public class Reportar_pensamiento extends Fragment {
 
         controladorInterfazPrincipal = new ControladorInterfazPrincipal();
 
+        //Se obtienen los nombres de las categorias
+        List<String> categorias = controladorInterfazPrincipal.obtenerCategorias(this);
+
+        //Se asignan los nombres de las categorias a la lista desplegable
+        ArrayAdapter<String> elementosSpinner = new ArrayAdapter<String>(this.getActivity(),
+                android.R.layout.simple_spinner_item, categorias);
+        elementosSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoriaPensamiento.setAdapter(elementosSpinner);
+
         cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancelarReportePensamiento();
+                cerrarReportePensamiento();
             }
         });
 
@@ -70,15 +85,16 @@ public class Reportar_pensamiento extends Fragment {
         return rootView;
     }
 
-    private void cancelarReportePensamiento(){
+    public void cerrarReportePensamiento(){
         requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         requireActivity().getSupportFragmentManager().popBackStack();
-        getActivity().recreate();
+        controladorInterfazPrincipal.activarBotonReporte((Actividad_interfaz_principal) this.getActivity());
     }
 
-    private void reportarPensamiento(){
-        String titulo = tituloPensamiento.getText().toString();
+    public void reportarPensamiento(){
+        String titulo = tituloPensamiento.getEditText().getText().toString();
         String descripcion = descripcionPensamiento.getEditText().getText().toString();
-        controladorInterfazPrincipal.reportar((Actividad_interfaz_principal) this.getActivity(), titulo, descripcion);
+        String categoria = categoriaPensamiento.getSelectedItem().toString();
+        controladorInterfazPrincipal.reportar(this, titulo, descripcion, categoria);
     }
 }
