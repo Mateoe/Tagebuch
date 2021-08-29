@@ -2,6 +2,7 @@ package com.example.tagebuch.view;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
@@ -13,6 +14,8 @@ import android.widget.Button;
 
 import com.example.tagebuch.R;
 import com.example.tagebuch.controller.ControladorInterfazPrincipal;
+import com.example.tagebuch.controller.memento.Caretaker;
+import com.example.tagebuch.controller.memento.Memento;
 import com.example.tagebuch.model.pojo.Pensamiento;
 import com.example.tagebuch.view.fragmentos.reportar_pensamiento;
 import com.example.tagebuch.view.fragmentos.detalle_pensamiento;
@@ -25,6 +28,7 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
 
     private Button botonReportarPensamiento;
     private ControladorInterfazPrincipal controladorInterfazPrincipal;
+    private Caretaker caretaker = new Caretaker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +68,16 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.boton_deshacer:
-                mensaje("Deshacer","Deshacer");
+                Memento mementoDeshacer = caretaker.obtenerMementoDeshacer();
+                if(mementoDeshacer!=null){
+                    controladorInterfazPrincipal.ejecutarMementoDeshacer(this,mementoDeshacer);
+                }
                 return true;
             case R.id.boton_rehacer:
-                mensaje("Rehacer","Rehacer");
+                Memento mementoRehacer = caretaker.obtenerMementoRehacer();
+                if (mementoRehacer!=null){
+                    controladorInterfazPrincipal.ejecutarMementoRehacer(this,mementoRehacer);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,6 +147,20 @@ public class Actividad_interfaz_principal extends AppCompatActivity {
         dialog.show();
     }
 
+    public void guardarMementoDeshacer(Memento memento, boolean limpiarRehacer){
+        caretaker.agregarMementoDeshacer(memento);
+        if (limpiarRehacer){
+            caretaker.limpiarRehacer();
+        }
+    }
+    public void guardarMementoRehacer(Memento memento){
+        caretaker.agregarMementoRehacer(memento);
+    }
+
+    public void actualizarLista(){
+        getSupportFragmentManager().beginTransaction().replace(R.id.linear_layout_interfaz_principal,new Fragment()).commit();
+        listarPensamiento();
+    }
 
 
 }

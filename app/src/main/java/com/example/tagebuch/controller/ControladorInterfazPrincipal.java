@@ -3,6 +3,8 @@ package com.example.tagebuch.controller;
 
 import android.text.TextUtils;
 
+import com.example.tagebuch.controller.memento.Memento;
+import com.example.tagebuch.controller.memento.Originator;
 import com.example.tagebuch.model.LocalStorage;
 import com.example.tagebuch.model.dao.CategoriaRoomDAO;
 import com.example.tagebuch.model.dao.PensamientoRoomDAO;
@@ -20,6 +22,7 @@ public class ControladorInterfazPrincipal {
 
     private PensamientoRoomDAO pensamientoRoomDAO;
     private CategoriaRoomDAO categoriaRoomDAO;
+    private Originator originator = new Originator();
 
     public void insertarCategorias (Actividad_interfaz_principal actividad_interfaz_principal){
 
@@ -62,7 +65,12 @@ public class ControladorInterfazPrincipal {
         pensamiento.setFecha(
                 fecha.format(Calendar.getInstance().getTime()));
         this.pensamientoRoomDAO.insertar(pensamiento);
+
+        originator.setPensamiento(pensamiento);
+        originator.setOperacion("reportar");
+        actividad_interfaz_principal.guardarMementoDeshacer(originator.guardar(),true);
     }
+
 
     //Se crea un metodo para activar el boton de reportar pensamiento en la interfaz principal
     public void activarBotonReporte(Actividad_interfaz_principal actividad_interfaz_principal){
@@ -137,6 +145,10 @@ public class ControladorInterfazPrincipal {
         pensamiento.setFecha(fecha);
 
         pensamientoRoomDAO.eliminar(pensamiento);
+
+        originator.setPensamiento(pensamiento);
+        originator.setOperacion("eliminar");
+        actividad_interfaz_principal.guardarMementoDeshacer(originator.guardar(),true);
     }
 
     public void mostrarEditarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal,
@@ -151,6 +163,10 @@ public class ControladorInterfazPrincipal {
                 .getLocalStorage(actividad_interfaz_principal.getApplicationContext())
                 .pensamientoRoomDAO();
 
+        originator.setPensamiento(pensamientoRoomDAO.obtenerPorFecha(fecha));
+        originator.setOperacion("editar");
+        actividad_interfaz_principal.guardarMementoDeshacer(originator.guardar(),true);
+
         Pensamiento pensamiento = new Pensamiento();
         pensamiento.setTitulo(titulo);
         pensamiento.setDescripcion(descripcion);
@@ -159,6 +175,7 @@ public class ControladorInterfazPrincipal {
 
         pensamientoRoomDAO.actualizar(pensamiento);
     }
+
     public void mensajeReportarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
         actividad_interfaz_principal.mensaje("Pensamiento reportado!",
                 "Tu pensamiento se agregó a la lista.");
@@ -171,14 +188,67 @@ public class ControladorInterfazPrincipal {
 
     public void mensajeEliminarPensamiento(Actividad_interfaz_principal actividad_interfaz_principal) {
         actividad_interfaz_principal.mensaje("Pensamiento eliminado!",
-                "Tu pensamiento se eliminó de forma permanente.");
+                "Tu pensamiento se eliminó de la lista.");
     }
 
     public boolean verificarCampoLleno(String texto){
         return  TextUtils.isEmpty(texto);
     }
+
     public boolean verificarLongitud(String texto){
         return  texto.length()>100;
+    }
+
+    public void ejecutarMementoDeshacer (Actividad_interfaz_principal actividad_interfaz_principal, Memento memento){
+        this.pensamientoRoomDAO = LocalStorage
+                .getLocalStorage(actividad_interfaz_principal.getApplicationContext())
+                .pensamientoRoomDAO();
+
+        String operacion = memento.getOperacion();
+        Pensamiento pensamiento = memento.getPensamiento();
+
+        if (operacion == "reportar") {
+            pensamientoRoomDAO.eliminar(pensamiento);
+            actividad_interfaz_principal.guardarMementoRehacer(memento);
+        }if (operacion == "eliminar") {
+            pensamientoRoomDAO.insertar(pensamiento);
+            actividad_interfaz_principal.guardarMementoRehacer(memento);
+        }if (operacion == "editar"){
+            originator.setOperacion(operacion);
+            originator.setPensamiento(pensamientoRoomDAO.obtenerPorFecha(pensamiento.getFecha()));
+            actividad_interfaz_principal.guardarMementoRehacer(originator.guardar());
+            pensamientoRoomDAO.actualizar(pensamiento);
+        }
+
+        actividad_interfaz_principal.actualizarLista();
+        actividad_interfaz_principal.activarBoton();
+
+    }
+
+    public void ejecutarMementoRehacer (Actividad_interfaz_principal actividad_interfaz_principal, Memento memento){
+        this.pensamientoRoomDAO = LocalStorage
+                .getLocalStorage(actividad_interfaz_principal.getApplicationContext())
+                .pensamientoRoomDAO();
+
+        String operacion = memento.getOperacion();
+        Pensamiento pensamiento = memento.getPensamiento();
+
+        if (operacion == "reportar") {
+            pensamientoRoomDAO.insertar(pensamiento);
+            actividad_interfaz_principal.guardarMementoDeshacer(memento,false);
+        }if (operacion == "eliminar") {
+            pensamientoRoomDAO.eliminar(pensamiento);
+            actividad_interfaz_principal.guardarMementoDeshacer(memento,false);
+        }if (operacion == "editar"){
+            originator.setOperacion(operacion);
+            originator.setPensamiento(pensamientoRoomDAO.obtenerPorFecha(pensamiento.getFecha()));
+            actividad_interfaz_principal.guardarMementoDeshacer(originator.guardar(),false);
+            pensamientoRoomDAO.actualizar(pensamiento);
+        }
+
+        actividad_interfaz_principal.actualizarLista();
+        actividad_interfaz_principal.activarBoton();
+
     }
 
 }

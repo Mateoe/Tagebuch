@@ -15,6 +15,9 @@ public interface PensamientoRoomDAO {
     @Query("SELECT * FROM pensamientos")
     List<Pensamiento> getAll();
 
+    @Query("SELECT * FROM pensamientos WHERE fecha = :fecha LIMIT 1")
+    Pensamiento obtenerPorFecha(String fecha);
+
     @Insert
     void insertar(Pensamiento pensamiento);
     @Delete
